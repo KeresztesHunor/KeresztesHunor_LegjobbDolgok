@@ -111,54 +111,52 @@ const objList = [
 function init()
 {
     const szuloElem = document.querySelector("body > article");
-    kiir(osszeallit(objList), szuloElem);
-    const tablazat = document.querySelector("#tablazat");
-    tablazatMegjelenit(tablazat);
-}
-
-function osszeallit(lista)
-{
-    let txt = "";
-    for (let i = 0; i < lista.length; i++)
+    letezoTagekKozeIr(szuloElem, () =>
     {
-        txt += containeresKiiras(
-            containeresKiiras(lista[i].nev, "h3") +
-            containeresKiiras(lista[i].mondat, "p"),
-            "div"
-        );
-    }
-    return txt;
-}
-
-function tablazatMegjelenit(szuloElem)
-{
-    kiir(containeresKiiras("", "table"), szuloElem);
-    const table = document.querySelector("table");
-    let txt = "";
-    txt += "<tr>";
-    for (const key in objList[0])
-    {
-        txt += `<th>${key}</th>`;
-    }
-    txt += "</tr>";
-    for (let i = 0; i < objList.length; i++)
-    {
-        txt += "<tr>";
-        for (const key in objList[i])
+        let txt = "";
+        for (let i = 0; i < objList.length; i++)
         {
-            txt += `<td>${objList[i][key]}</td>`;
+            txt += ujTagekKozeIr("div", () => ujTagekKozeIr("h3", () => objList[i].nev) + ujTagekKozeIr("p", () => objList[i].mondat));
         }
-        txt += "</tr>";
-    }
-    kiir(txt, table)
+        return txt;
+    });
+    const tablazat = document.querySelector("#tablazat");
+    letezoTagekKozeIr(tablazat, () => ujTagekKozeIr("table", () =>
+    {
+        let txt = "";
+        txt += ujTagekKozeIr("tr", () =>
+        {
+            let txt = "";
+            for (const key in objList[0])
+            {
+                txt += ujTagekKozeIr("th", () => key);
+            }
+            return txt;
+        });
+        for (let i = 0; i < objList.length; i++)
+        {
+            txt += ujTagekKozeIr("tr", () =>
+            {
+                let txt = "";
+                for (const key in objList[i])
+                {
+                    txt += ujTagekKozeIr("td", () => objList[i][key]);
+                }
+                return txt;
+            });
+        }
+        return txt;
+    }));
 }
 
-function kiir(tartalom, szuloElem)
+function ujTagekKozeIr(tag, tartalom = () => "")
 {
-    szuloElem.innerHTML += tartalom;
+    let txt = `<${tag}>`;
+    txt += tartalom();
+    return txt + `</${tag}>`;
 }
 
-function containeresKiiras(tartalom, containerTipus)
+function letezoTagekKozeIr(szuloElem, tartalom = () => "")
 {
-    return `<${containerTipus}>${tartalom}</${containerTipus}>`;
+    szuloElem.innerHTML += tartalom();
 }

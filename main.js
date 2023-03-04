@@ -129,7 +129,24 @@ function init()
             let txt = "";
             for (const key in objList[0])
             {
-                txt += ujTagekKozeIr("th", () => key);
+                txt += ujTagekKozeIr("th", () =>
+                {
+                    switch (key)
+                    {
+                        case "nev":
+                            return "Név";
+                        case "mondat":
+                            return "Mondat";
+                        case "kor":
+                            return "Kor";
+                        case "teso":
+                            return "Tesó";
+                        case "szemszin":
+                            return "Szem szín";
+                        default:
+                            return "Hiba! Nincs ilyen kulcs.";
+                    }
+                });
             }
             return txt;
         });
